@@ -7,3 +7,7 @@ __pycache__/
 
 # Local notes and drafts; do not upload these to GitHub.
 local-files/
+node_modules/
+test-results/
+.preview-test/
+dist/

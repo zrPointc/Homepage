@@ -1,0 +1,12 @@
+<div class="diary-list">
+  {% for post in listed_posts %}
+  <article class="diary-card">
+    <time datetime="{{ post.date.isoformat() }}">{{ post.date_text }}</time>
+    <div>
+      <h3><a href="/diary/{{ post.slug }}/">{{ post.title }}<span class="diary-arrow" aria-hidden="true">↗</span></a></h3>
+      <p>{{ post.summary }}</p>
+      <ul class="tag-list">{% for tag in post.tags %}<li># {{ tag }}</li>{% endfor %}</ul>
+    </div>
+  </article>
+  {% else %}<p class="empty-note hand">まだ日記はありません。</p>{% endfor %}
+</div>

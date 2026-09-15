@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1b1919">
+  <meta name="description" content="{% block description %}{{ profile.description }}{% endblock %}">
+  <title>{% block title %}{{ profile.title }}{% endblock %}</title>
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.description() }}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Yomogi&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='site.js') }}" defer></script>
+</head>
+<body data-page="{{ page }}">
+  <a class="skip-link" href="#main">本文へ</a>
+  {% include '_nav.html' %}
+  <div class="site-shell" id="top">
+    {% include '_header.html' %}
+    <main id="main">{% block content %}{% endblock %}</main>
+    {% include '_footer.html' %}
+  </div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 ---
 title: 点のホームページ
-description: 今見ているページ。
+description: 日記と制作記録を、少しずつ残していく場所。
+filename: Ten-Homepage / app.py
 status: 制作中
 kind: code
 url: https://github.com/zrPointc/Ten-Homepage.git

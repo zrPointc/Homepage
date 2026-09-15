@@ -1,0 +1,13 @@
+{# 通常のリンクなので、JavaScriptが無効でも全ページから移動できます。 #}
+<nav class="site-nav" aria-label="メインメニュー">
+  <a class="nav-brand hand" href="/" aria-label="点のホームページ">● 点<span>の作業部屋</span></a>
+  <span class="nav-label">EXPLORE</span>
+  <div class="nav-items">
+    <a href="{{ '#top' if page == 'home' else '/' }}" data-section="top" {% if page == 'home' %}class="active" aria-current="location"{% endif %}><span class="nav-symbol" aria-hidden="true">⌂</span><span>ホーム</span></a>
+    <a href="{{ '#diary' if page == 'home' else '/diary/' }}" data-section="diary" {% if page == 'diary' %}class="active" aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">▤</span><span>日記</span></a>
+    <a href="{{ '#now' if page == 'home' else '/#now' }}" data-section="now"><span class="nav-symbol" aria-hidden="true">&gt;_</span><span>いま</span></a>
+    <a href="{{ '#works' if page == 'home' else '/#works' }}" data-section="works"><span class="nav-symbol" aria-hidden="true">&lt;/&gt;</span><span>作品</span></a>
+    <a href="#links" data-section="links"><span class="nav-symbol" aria-hidden="true">↗</span><span>リンク</span></a>
+  </div>
+  <p class="nav-note hand">すこしずつ、<br>つくっていく。<span>〜〜</span></p>
+</nav>

@@ -35,6 +35,7 @@ def _read_project(path: Path) -> dict[str, object]:
     return {
         "id": path.stem,
         "title": metadata["title"],
+        "filename": metadata.get("filename", path.name),
         "description": metadata["description"],
         "status": metadata.get("status", "制作中"),
         "kind": kind,

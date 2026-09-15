@@ -1,2 +1,12 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#1b1919"><meta name="description" content="点の日記一覧"><title>日記｜{{ profile.title }}</title><link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Yomogi&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
-<body><div class="site-wrap">{% include '_header.html' %}<main class="diary-page"><a class="back-link" href="/">← ホームへ</a><div class="diary-heading"><p class="hand">DIARY</p><h1 class="hand"><span class="pencil-underline">日記</span></h1><p>勉強したこと、つくっているもの、その日に考えたこと。</p></div><div class="diary-list">{% for post in posts %}<article class="diary-card"><time datetime="{{ post.date.isoformat() }}">{{ post.date_text }}</time><div><h2><a href="/diary/{{ post.slug }}/">{{ post.title }}</a></h2><p>{{ post.summary }}</p><ul class="tag-list">{% for tag in post.tags %}<li># {{ tag }}</li>{% endfor %}</ul></div><a class="diary-arrow" href="/diary/{{ post.slug }}/" aria-label="{{ post.title }}を読む">→</a></article>{% else %}<p class="empty-note hand">まだ日記はありません。</p>{% endfor %}</div></main></div></body></html>
+{% extends 'base.html' %}
+{% set page = 'diary' %}
+{% block title %}日記｜{{ profile.title }}{% endblock %}
+{% block description %}点の日記。勉強したこと、つくっているもの、その日に考えたこと。{% endblock %}
+{% block content %}
+<section class="diary-page" aria-labelledby="diary-title">
+  <p class="eyebrow">DIARY / 学習と日々の記録</p>
+  <h1 id="diary-title" class="hand page-title">点の日記</h1>
+  <p class="page-intro">勉強したこと、つくっているもの、その日に考えたこと。</p>
+  {% set listed_posts = posts %}{% include '_posts.html' %}
+</section>
+{% endblock %}

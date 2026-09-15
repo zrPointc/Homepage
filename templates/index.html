@@ -1,115 +1,45 @@
-<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1b1919">
-  <meta name="description" content="{{ profile.description }}">
-  <title>{{ profile.title }}</title>
-  <meta property="og:title" content="{{ profile.title }}">
-  <meta property="og:description" content="{{ profile.description }}">
-  <meta property="og:type" content="website">
-  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Yomogi&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
-  <script src="{{ url_for('static', filename='site.js') }}" defer></script>
-</head>
-<body class="has-jump-nav">
-  <a class="skip-link" href="#main">本文へ</a>
-  <div class="site-wrap" id="top">
-    {% include '_header.html' %}
-
-    <div class="page-layout">
-      <aside class="sidebar" aria-label="プロフィールとメニュー">
-        <div class="profile-top">
-          <div class="profile-copy">
-            <h1 class="profile-name hand">{{ profile.name }} <span>・ {{ profile.reading }}</span></h1>
-            <p>{{ profile.bio }}</p>
-          </div>
-        </div>
-        <nav class="site-nav hand" aria-label="ページ内メニュー">
-          <a href="#top" class="active" aria-current="location"><span aria-hidden="true">→</span> トップ</a>
-          <a href="#diary"><span aria-hidden="true">→</span> 最近の日記</a>
-          <a href="#now"><span aria-hidden="true">→</span> いまやってること</a>
-          <a href="#works"><span aria-hidden="true">→</span> つくったもの</a>
-          <a href="#links"><span aria-hidden="true">→</span> リンク</a>
-        </nav>
-        <div class="favorites">
-          <h2 class="hand"><span class="pencil-underline">すきなこと</span></h2>
-          <ul>
-            <li><span class="favorite-symbol hand" aria-hidden="true">&lt;/&gt;</span>プログラミング</li>
-            <li><span class="favorite-symbol hand" aria-hidden="true">＋ ○</span>ゲーム</li>
-            <li><span class="favorite-symbol hand" aria-hidden="true">▤</span>ノート・記録</li>
-          </ul>
-          <p class="margin-note hand">すこしずつ、<br><span>たのしく。</span></p>
-        </div>
-      </aside>
-
-      <main id="main">
-        <section class="welcome" aria-labelledby="welcome-title">
-          <div class="welcome-copy">
-            <h2 id="welcome-title" class="hand">{{ profile.greeting }}</h2>
-            <p>{% for line in profile.intro %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</p>
-          </div>
-          <figure class="portrait welcome-portrait paper">
-            <span class="tape" aria-hidden="true"></span>
-            <img src="{{ url_for('static', filename='images/icon.jpeg') }}" alt="赤いパーカーを着て、パソコンに向かう小さなキャラクター" width="1254" height="1254" fetchpriority="high">
-            <figcaption class="hand">のんびり、つくっています。</figcaption>
-          </figure>
-        </section>
-
-        <section class="home-diary" id="diary" aria-labelledby="diary-title">
-          <div class="section-heading"><h2 id="diary-title" class="hand"><span class="pencil-underline">最近の日記</span></h2><a href="/diary/">日記をすべて見る →</a></div>
-          <div class="diary-list compact">{% for post in latest_posts %}<article class="diary-card"><time datetime="{{ post.date.isoformat() }}">{{ post.date_text }}</time><div><h3><a href="/diary/{{ post.slug }}/">{{ post.title }}</a></h3><p>{{ post.summary }}</p><ul class="tag-list">{% for tag in post.tags %}<li># {{ tag }}</li>{% endfor %}</ul></div><a class="diary-arrow" href="/diary/{{ post.slug }}/" aria-label="{{ post.title }}を読む">→</a></article>{% endfor %}</div>
-        </section>
-
-        <section class="now paper" id="now" aria-labelledby="now-title">
-          <span class="tape tape-first" aria-hidden="true"></span>
-          <span class="tape tape-last" aria-hidden="true"></span>
-          <h2 id="now-title" class="hand"><span class="pencil-underline">いまやってること</span></h2>
-          <ul class="activity-list hand">{% for activity in activities %}<li>{{ activity }}</li>{% endfor %}</ul>
-          <p class="now-aside hand">少しずつ<br>つづける！</p>
-          <span class="now-scribble hand" aria-hidden="true">〜</span>
-        </section>
-
-        <section class="works" id="works" aria-labelledby="works-title">
-          <div class="section-heading"><h2 id="works-title" class="hand"><span class="pencil-underline">つくったもの</span></h2><p class="hand">つくるって、たのしい。</p></div>
-          <div class="project-list">
-            {% for project in projects %}
-            <details class="project" id="project-{{ project.id }}">
-              <summary>
-                <span class="project-cover {{ project.kind }}-cover" aria-hidden="true">
-                  {% if project.kind == 'code' %}
-                  <span class="mini-window"><span class="window-top"><i></i><i></i><i></i></span><span class="code-marks"><b></b><b></b><b></b><b></b></span><span class="question-mark hand">?</span></span>
-                  {% elif project.kind == 'game' %}
-                  <span class="game-caption">SMALL GAME</span><span class="game-title hand">あそびを<br>つくる。</span><span class="game-dots">■ · ■ · ■</span>
-                  {% else %}
-                  <span class="game-caption">MY WORK</span><span class="game-title hand">つくった<br>もの。</span><span class="game-dots">● · ● · ●</span>
-                  {% endif %}
-                </span>
-                <span class="project-copy"><span class="project-title">{{ project.title }}</span><span class="project-description">{{ project.description }}</span><span class="project-bottom"><span class="project-action hand"><span class="when-closed">のぞいてみる</span><span class="when-open">とじる</span><span aria-hidden="true" class="project-arrow">→</span></span>{% if project.status %}<span class="status hand">{{ project.status }}</span>{% endif %}</span></span>
-              </summary>
-              <div class="project-details">
-                <div class="project-body">{{ project.body_html | safe }}</div>
-                {% if project.url %}<a class="text-link" href="{{ project.url }}" target="_blank" rel="noopener noreferrer">{{ project.link_text }} <span aria-hidden="true">↗</span><span class="sr-only">（新しいタブ）</span></a>{% endif %}
-              </div>
-            </details>
-            {% endfor %}
-          </div>
-        </section>
-
-        <footer class="links-section" id="links" aria-label="SNSリンク">
-          <ul class="social-links">
-            {% for social in social_links %}<li>{% if social.url %}<a href="{{ social.url }}" target="_blank" rel="noopener noreferrer">{{ social.name }} <span aria-hidden="true">↗</span><span class="sr-only">（新しいタブ）</span></a>{% else %}<span class="social-pending">{{ social.name }}<small>準備中</small></span>{% endif %}</li>{% endfor %}
-          </ul>
-          <p class="hand">また、のぞきにきてね。</p>
-        </footer>
-      </main>
-    </div>
-    <div class="bottom-line"><span class="hand">© 2026 {{ profile.name }}</span><a href="#top">ページの上へ ↑</a></div>
+{% extends 'base.html' %}
+{% set page = 'home' %}
+{% block content %}
+<section class="welcome" aria-labelledby="welcome-title">
+  <div class="welcome-copy">
+    <p class="eyebrow">HELLO, WORLD. / 点の作業部屋</p>
+    <h1 id="welcome-title" class="hand" aria-label="{{ profile.greeting }}"><span class="greeting" data-typewriter aria-hidden="true">{{ profile.greeting }}</span><span class="typing-cursor" aria-hidden="true">▏</span></h1>
+    {% for line in profile.intro %}<p class="intro-line">{{ line }}</p>{% endfor %}
+    <a class="text-link" href="#diary">最近の日記を読む ↗</a>
   </div>
-</body>
-</html>
+  <figure class="portrait">
+    <span class="tape" aria-hidden="true"></span>
+    <img src="{{ url_for('static', filename='images/icon.jpeg') }}" alt="点のプロフィールアイコン" width="800" height="800" fetchpriority="high">
+    <figcaption class="hand">のんびり、つくっています。</figcaption>
+  </figure>
+</section>
+<section id="diary" aria-labelledby="diary-title">
+  <div class="section-heading"><h2 id="diary-title" class="hand">最近の日記 <span>diary/</span></h2><a class="text-link" href="/diary/">すべて見る ↗</a></div>
+  {% set listed_posts = latest_posts %}{% include '_posts.html' %}
+</section>
+<section class="terminal" id="now" aria-labelledby="now-title">
+  <div class="window-bar"><span class="window-dots" aria-hidden="true">● ● ●</span><h2 id="now-title">いまやってること <span>/ now.sh</span></h2></div>
+  <div class="terminal-body">
+    <p><span class="prompt">ten@home ~ %</span> cat now.txt</p>
+    <ul>{% for activity in activities %}<li><span class="prompt" aria-hidden="true">&gt;</span> {{ activity }}</li>{% endfor %}</ul>
+    <p class="terminal-comment"># 少しずつ、つづける。</p>
+  </div>
+</section>
+<section id="works" aria-labelledby="works-title">
+  <div class="section-heading"><h2 id="works-title" class="hand">つくったもの <span>projects/</span></h2><p class="hand section-note">つくるって、たのしい。</p></div>
+  <div class="project-list">
+    {% for project in projects %}
+    <article class="project">
+      <div class="window-bar"><span class="window-dots" aria-hidden="true">● ● ●</span><span class="project-file">{{ project.filename }}</span>{% if project.status %}<span class="status">{{ project.status }}</span>{% endif %}</div>
+      <div class="project-content">
+        <div class="project-art" aria-hidden="true"><span>{{ '</>' if project.kind == 'code' else '+ ○' if project.kind == 'game' else '▤' }}</span><span class="hand">つくって、<br>ためして、<br>記録する。</span></div>
+        <div><h3>{{ project.title }}</h3><p class="project-description">{{ project.description }}</p><div class="markdown-body project-body">{{ project.body_html | safe }}</div>
+          {% if project.url %}<a class="text-link" href="{{ project.url }}" target="_blank" rel="noopener noreferrer">{{ project.link_text }} ↗<span class="sr-only">（新しいタブ）</span></a>{% endif %}
+        </div>
+      </div>
+    </article>
+    {% else %}<p class="empty-note hand">つくったものを、これから置いていきます。</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

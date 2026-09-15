@@ -1,4 +1,5 @@
 ---
+filename: my-project.md
 title: 作品名
 description: 一覧に表示する短い説明。
 status: 制作中
