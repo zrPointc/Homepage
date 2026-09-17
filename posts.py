@@ -14,6 +14,7 @@ def _inline(text: str) -> str:
     value = html.escape(text, quote=True)
     value = re.sub(r"`([^`]+)`", r"<code>\1</code>", value)
     value = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", value)
+    value = re.sub(r"~~([^~]+)~~", r"<del>\1</del>", value)
     value = re.sub(
         r"\[([^]]+)]\((https?://[^ )]+)\)",
         r'<a href="\2" target="_blank" rel="noopener noreferrer">\1 ↗</a>',
@@ -71,7 +72,15 @@ def markdown_to_html(markdown: str) -> str:
             if not in_list:
                 output.append("<ul>")
                 in_list = True
-            output.append(f"<li>{_inline(item.group(1))}</li>")
+            task = re.match(r"^\[([ xX])\]\s+(.+)$", item.group(1))
+            if task:
+                checked = " checked" if task.group(1).lower() == "x" else ""
+                output.append(
+                    f'<li class="task-item"><input type="checkbox" disabled{checked}>'
+                    f"<span>{_inline(task.group(2))}</span></li>"
+                )
+            else:
+                output.append(f"<li>{_inline(item.group(1))}</li>")
             continue
         paragraph.append(line)
 

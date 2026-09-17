@@ -114,6 +114,9 @@ main { min-width: 0; padding-top: 38px; }
 .markdown-body h3 { font-size: 22px; }
 .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin: 0 0 1.3em; list-style: revert; }
 .markdown-body li { margin: .4em 0; }
+.markdown-body .task-item { display: flex; gap: .55em; align-items: baseline; list-style: none; margin-left: -1.5em; }
+.markdown-body .task-item input { accent-color: #9c3937; flex: 0 0 auto; }
+.markdown-body del { color: #8d7269; }
 .markdown-body code { font-family: var(--mono); font-size: .9em; background: #dfd3c5; color: #352923; padding: .15em .35em; border-radius: 3px; }
 .markdown-body pre { overflow-x: auto; background: #292323; color: #f5eee6; padding: 20px; line-height: 1.7; border-radius: 6px; }
 .markdown-body pre code { background: none; color: inherit; padding: 0; }
