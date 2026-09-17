@@ -8,10 +8,10 @@ const { chromium } = require('playwright');
 (async () => {
   const preview = path.resolve('.preview-test');
   await fs.mkdir(preview, { recursive: true });
-  await fs.cp('dist', path.join(preview, 'Ten-Homepage'), { recursive: true });
+  await fs.cp('dist', path.join(preview, 'Homepage'), { recursive: true });
   await fs.mkdir('test-results', { recursive: true });
   const server = spawn('python', ['-m', 'http.server', '8765', '--bind', '127.0.0.1', '--directory', preview], { stdio: 'ignore' });
-  const base = 'http://127.0.0.1:8765/Ten-Homepage/';
+  const base = 'http://127.0.0.1:8765/Homepage/';
   let browser;
   try {
     for (let i = 0; i < 50; i++) {
@@ -65,7 +65,7 @@ const { chromium } = require('playwright');
       }
       await page.locator('.nav-items a[data-section="top"]').click();
       assert((await page.evaluate(() => scrollY)) <= 1);
-      await page.locator('a[href="/Ten-Homepage/diary/"]').click();
+      await page.locator('a[href="/Homepage/diary/"]').click();
       await checkLayout('diary');
       await page.screenshot({ path: `test-results/diary-${width}.png`, fullPage: true });
       await page.locator('.diary-card h3 a').first().click();
@@ -74,7 +74,7 @@ const { chromium } = require('playwright');
       await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
       await checkLayout('post bottom');
       await page.locator('.nav-items a[data-section="now"]').click();
-      assert(page.url().endsWith('/Ten-Homepage/#now'));
+      assert(page.url().endsWith('/Homepage/#now'));
       assert.equal(await page.locator('.greeting.is-typing').count(), 0, '戻るたびに再生しない');
       await context.close();
       console.log(`PASS ${width}px: トップ・日記・記事、固定メニュー、全リンク、アンカー`);
