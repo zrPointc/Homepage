@@ -13,7 +13,7 @@ BASE_PATH = os.environ.get("SITE_BASE_PATH", "").rstrip("/")
 
 
 def add_base_path(page: bytes) -> bytes:
-    """GitHub Pagesの /Ten-Homepage 配下でもリンクが動くようにします。"""
+    """GitHub Pagesの /Homepage 配下でもリンクが動くようにします。"""
     if not BASE_PATH:
         return page
     text = page.decode("utf-8")

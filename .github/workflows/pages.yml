@@ -29,7 +29,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Build diary
         env:
-          SITE_BASE_PATH: /Ten-Homepage
+          SITE_BASE_PATH: /Homepage
         run: python export.py
       - name: Set up Node for browser checks
         uses: actions/setup-node@v4
