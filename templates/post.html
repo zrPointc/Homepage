@@ -9,6 +9,17 @@
   <span class="tape" aria-hidden="true"></span>
   <header><time datetime="{{ post.date.isoformat() }}">{{ post.date_text }}</time><h1 class="hand">{{ post.title }}</h1><ul class="tag-list">{% for tag in post.tags %}<li># {{ tag }}</li>{% endfor %}</ul></header>
   <div class="markdown-body">{{ post.body_html | safe }}</div>
+  <section class="post-like-panel" aria-label="この記事へのいいね">
+    <p class="hand post-like-message">読んだよ、の代わりに。</p>
+    <div class="like-widget" data-like-widget data-like-key="diary:{{ post.slug }}" hidden>
+      <button class="like-button like-button-paper" type="button" data-like-button aria-pressed="false">
+        <span class="like-heart" aria-hidden="true">♡</span>
+        <span class="like-label">いいね</span>
+        <span class="like-count" data-like-count aria-live="polite">…</span>
+      </button>
+      <p class="like-status like-status-paper" data-like-status>1ブラウザ1票くらいの、ゆるいいいねです。</p>
+    </div>
+  </section>
 </article>
 <nav class="post-footer" aria-label="記事を読んだあと"><a class="text-link" href="/diary/">日記一覧へ戻る</a><a class="text-link" href="/">ホームへ</a></nav>
 {% endblock %}
