@@ -1,0 +1,138 @@
+.site-like-panel {
+  margin: 8px 0 34px;
+  padding: 18px 20px;
+  border: 1px dashed #8a6a60;
+  border-radius: 8px;
+  background: #211d1c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 24px;
+}
+
+.site-like-panel .eyebrow {
+  margin-bottom: 4px;
+}
+
+.site-like-message {
+  font-size: 18px;
+}
+
+.like-widget {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.like-button {
+  appearance: none;
+  border: 1px solid #8b5b56;
+  border-radius: 999px;
+  min-height: 46px;
+  padding: 8px 16px;
+  background: #2a2221;
+  color: #f2ede5;
+  font: 700 14px/1.2 var(--body);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+
+.like-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--red);
+  background: #372625;
+}
+
+.like-button:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+.like-button[aria-pressed="true"] {
+  background: #4a2928;
+  border-color: #ef8b86;
+}
+
+.like-button:disabled {
+  cursor: wait;
+  opacity: .65;
+  transform: none;
+}
+
+.like-heart {
+  color: #ff918b;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.like-count {
+  min-width: 1.8em;
+  padding-left: 8px;
+  border-left: 1px solid #795753;
+  font: 13px var(--mono);
+  text-align: right;
+}
+
+.like-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.post-like-panel {
+  margin-top: 42px;
+  padding-top: 24px;
+  border-top: 2px dashed #c9a89c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 24px;
+}
+
+.post-like-message {
+  color: #774a44;
+  font-size: 19px;
+}
+
+.like-button-paper {
+  background: #fff8ed;
+  color: #4b302c;
+  border-color: #c08178;
+}
+
+.like-button-paper:hover {
+  background: #f8e6da;
+}
+
+.like-button-paper[aria-pressed="true"] {
+  background: #f3d5cf;
+  border-color: #a74f4b;
+}
+
+.like-status-paper {
+  color: #7e655d;
+}
+
+@media (max-width: 620px) {
+  .site-like-panel,
+  .post-like-panel {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .like-widget {
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .like-button {
+    justify-content: center;
+    width: 100%;
+  }
+}
