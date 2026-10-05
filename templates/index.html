@@ -13,6 +13,20 @@
     <figcaption class="hand">のんびり、つくっています。</figcaption>
   </figure>
 </section>
+<section class="site-like-panel" aria-label="このホームページへのいいね">
+  <div>
+    <p class="eyebrow">REACTION / homepage</p>
+    <p class="hand site-like-message">ここ、ちょっといいかもと思ったら。</p>
+  </div>
+  <div class="like-widget" data-like-widget data-like-key="homepage" hidden>
+    <button class="like-button" type="button" data-like-button aria-pressed="false">
+      <span class="like-heart" aria-hidden="true">♡</span>
+      <span class="like-label">いいね</span>
+      <span class="like-count" data-like-count aria-live="polite">…</span>
+    </button>
+    <p class="like-status" data-like-status>1ブラウザ1票くらいの、ゆるいいいねです。</p>
+  </div>
+</section>
 <section id="diary" aria-labelledby="diary-title">
   <div class="section-heading"><h2 id="diary-title" class="hand">最近の日記 <span>diary/</span></h2><a class="text-link" href="/diary/">すべて見る ↗</a></div>
   {% set listed_posts = latest_posts %}{% include '_posts.html' %}
