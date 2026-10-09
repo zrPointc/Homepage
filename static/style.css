@@ -114,8 +114,28 @@ main { min-width: 0; padding-top: 38px; }
 .markdown-body h3 { font-size: 22px; }
 .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin: 0 0 1.3em; list-style: revert; }
 .markdown-body li { margin: .4em 0; }
-.markdown-body .task-item { display: flex; gap: .55em; align-items: baseline; list-style: none; margin-left: -1.5em; }
-.markdown-body .task-item input { accent-color: #9c3937; flex: 0 0 auto; }
+.markdown-body .task-item { display: flex; gap: .7em; align-items: flex-start; list-style: none; margin-left: -1.5em; }
+.markdown-body .task-item input[type="checkbox"] {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: .3em 0 0;
+  border: 2px solid #5f463d;
+  border-radius: 4px;
+  background: #fffaf1;
+  box-shadow: 0 1px 0 #ffffffb3, inset 0 0 0 1px #d9cbbb;
+  opacity: 1;
+}
+.markdown-body .task-item input[type="checkbox"]:checked {
+  border-color: #9c3937;
+  background-color: #9c3937;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='none' stroke='%23fffaf1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.8' d='m4 10 4 4 8-9'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: 0 1px 0 #ffffffb3;
+}
 .markdown-body del { color: #8d7269; }
 .markdown-body code { font-family: var(--mono); font-size: .9em; background: #dfd3c5; color: #352923; padding: .15em .35em; border-radius: 3px; }
 .markdown-body pre { overflow-x: auto; background: #292323; color: #f5eee6; padding: 20px; line-height: 1.7; border-radius: 6px; }
