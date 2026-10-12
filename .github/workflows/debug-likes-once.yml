@@ -19,61 +19,67 @@ jobs:
         run: |
           node <<'NODE'
           const fs = require('fs');
-          const source = fs.readFileSync('static/likes-config.js', 'utf8');
-          const url = source.match(/supabaseUrl:\s*["']([^"']+)/)?.[1];
-          const key = source.match(/supabasePublishableKey:\s*["']([^"']+)/)?.[1];
-          if (!url || !key) throw new Error('Could not parse Supabase config');
 
-          async function request(path, body, token = key) {
-            const res = await fetch(`${url}${path}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                apikey: key,
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify(body),
+          (async () => {
+            const source = fs.readFileSync('static/likes-config.js', 'utf8');
+            const url = source.match(/supabaseUrl:\s*["']([^"']+)/)?.[1];
+            const key = source.match(/supabasePublishableKey:\s*["']([^"']+)/)?.[1];
+            if (!url || !key) throw new Error('Could not parse Supabase config');
+
+            async function request(path, body, token = key) {
+              const res = await fetch(`${url}${path}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  apikey: key,
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(body),
+              });
+              const text = await res.text();
+              let parsed;
+              try { parsed = JSON.parse(text); } catch { parsed = text; }
+              return { status: res.status, ok: res.ok, body: parsed };
+            }
+
+            const auth = await request('/auth/v1/signup', {
+              data: {},
+              gotrue_meta_security: {},
             });
-            const text = await res.text();
-            let parsed;
-            try { parsed = JSON.parse(text); } catch { parsed = text; }
-            return { status: res.status, ok: res.ok, body: parsed };
-          }
+            console.log('AUTH_STATUS', auth.status);
+            if (!auth.ok) {
+              console.log('AUTH_ERROR', JSON.stringify(auth.body));
+              process.exit(1);
+            }
+            const accessToken = auth.body?.access_token;
+            const userId = auth.body?.user?.id;
+            if (!accessToken || !userId) throw new Error('Anonymous auth returned no session');
+            console.log('AUTH_OK user_id_present=true');
 
-          const auth = await request('/auth/v1/signup', {
-            data: {},
-            gotrue_meta_security: {},
+            const contentKey = 'diary:__ci_auth_test__';
+            const add = await request('/rest/v1/rpc/set_like_state', {
+              p_content_key: contentKey,
+              p_liked: true,
+            }, accessToken);
+            console.log('LIKE_ADD_STATUS', add.status);
+            if (!add.ok) {
+              console.log('LIKE_ADD_ERROR', JSON.stringify(add.body));
+              process.exit(1);
+            }
+            console.log('LIKE_ADD_OK', JSON.stringify(add.body));
+
+            const remove = await request('/rest/v1/rpc/set_like_state', {
+              p_content_key: contentKey,
+              p_liked: false,
+            }, accessToken);
+            console.log('LIKE_REMOVE_STATUS', remove.status);
+            if (!remove.ok) {
+              console.log('LIKE_REMOVE_ERROR', JSON.stringify(remove.body));
+              process.exit(1);
+            }
+            console.log('LIKE_REMOVE_OK', JSON.stringify(remove.body));
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
           });
-          console.log('AUTH_STATUS', auth.status);
-          if (!auth.ok) {
-            console.log('AUTH_ERROR', JSON.stringify(auth.body));
-            process.exit(1);
-          }
-          const accessToken = auth.body?.access_token;
-          const userId = auth.body?.user?.id;
-          if (!accessToken || !userId) throw new Error('Anonymous auth returned no session');
-          console.log('AUTH_OK user_id_present=true');
-
-          const contentKey = 'diary:__ci_auth_test__';
-          const add = await request('/rest/v1/rpc/set_like_state', {
-            p_content_key: contentKey,
-            p_liked: true,
-          }, accessToken);
-          console.log('LIKE_ADD_STATUS', add.status);
-          if (!add.ok) {
-            console.log('LIKE_ADD_ERROR', JSON.stringify(add.body));
-            process.exit(1);
-          }
-          console.log('LIKE_ADD_OK', JSON.stringify(add.body));
-
-          const remove = await request('/rest/v1/rpc/set_like_state', {
-            p_content_key: contentKey,
-            p_liked: false,
-          }, accessToken);
-          console.log('LIKE_REMOVE_STATUS', remove.status);
-          if (!remove.ok) {
-            console.log('LIKE_REMOVE_ERROR', JSON.stringify(remove.body));
-            process.exit(1);
-          }
-          console.log('LIKE_REMOVE_OK', JSON.stringify(remove.body));
           NODE
