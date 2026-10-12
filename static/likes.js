@@ -45,13 +45,14 @@
       headers: {
         "Content-Type": "application/json",
         apikey: publishableKey,
+        Authorization: `Bearer ${publishableKey}`,
       },
       body: JSON.stringify(body),
     });
 
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
-      throw new Error(payload?.msg || payload?.message || `Auth API ${response.status}`);
+      throw new Error(payload?.msg || payload?.message || payload?.error_description || `Auth API ${response.status}`);
     }
     return payload;
   }
@@ -85,7 +86,10 @@
     const current = await existingSession();
     if (current) return current;
 
-    const payload = await authRequest("signup", { data: {} });
+    const payload = await authRequest("signup", {
+      data: {},
+      gotrue_meta_security: {},
+    });
     const created = normalizeSession(payload);
     if (!created) throw new Error("Anonymous session was not returned.");
     saveSession(created);
