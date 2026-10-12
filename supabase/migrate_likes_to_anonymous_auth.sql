@@ -1,5 +1,6 @@
 -- 旧「任意の client_id をブラウザから送る」方式から、Supabase Anonymous Auth 方式へ移行します。
--- 現在の page_likes は監査用に page_likes_legacy_20261012 として残し、表示カウントは0から再スタートします。
+-- 現在の page_likes は page_likes_legacy_20261012 として固定保存し、
+-- その件数を「記念の初期いいね数」として今後の表示カウントに加算します。
 -- このファイルは一度だけ実行してください。
 
 begin;
@@ -9,11 +10,12 @@ drop function if exists public.set_like_state(text, uuid, boolean);
 drop function if exists public.set_like_state(text, boolean);
 drop function if exists public.get_like_state(text);
 
--- 攻撃で混ざったデータと正規データを安全に分離するため、旧テーブルは削除せず退避します。
+-- 旧いいねは削除せず、そのまま記念データとして固定保存します。
 alter table public.page_likes rename to page_likes_legacy_20261012;
 alter table public.page_likes_legacy_20261012 enable row level security;
 revoke all on table public.page_likes_legacy_20261012 from public, anon, authenticated;
 
+-- 新方式のいいねだけを保存するテーブルです。
 create table public.page_likes (
   content_key text not null,
   user_id uuid not null,
@@ -26,6 +28,7 @@ create table public.page_likes (
 alter table public.page_likes enable row level security;
 revoke all on table public.page_likes from public, anon, authenticated;
 
+-- 表示件数 = 旧方式で付いた記念いいね + 新方式の安全ないいね。
 create or replace function public.get_like_count(p_content_key text)
 returns bigint
 language sql
@@ -33,9 +36,14 @@ stable
 security definer
 set search_path = public
 as $$
-  select count(*)
-  from public.page_likes
-  where content_key = p_content_key;
+  select
+    (select count(*)
+     from public.page_likes_legacy_20261012
+     where content_key = p_content_key)
+    +
+    (select count(*)
+     from public.page_likes
+     where content_key = p_content_key);
 $$;
 
 create or replace function public.get_like_state(p_content_key text)
@@ -72,6 +80,8 @@ set search_path = public
 as $$
 declare
   v_user_id uuid := auth.uid();
+  v_legacy_count bigint;
+  v_new_count bigint;
 begin
   if v_user_id is null then
     raise exception 'authentication required' using errcode = '42501';
@@ -96,11 +106,15 @@ begin
       and user_id = v_user_id;
   end if;
 
-  return (
-    select count(*)
-    from public.page_likes
-    where content_key = p_content_key
-  );
+  select count(*) into v_legacy_count
+  from public.page_likes_legacy_20261012
+  where content_key = p_content_key;
+
+  select count(*) into v_new_count
+  from public.page_likes
+  where content_key = p_content_key;
+
+  return v_legacy_count + v_new_count;
 end;
 $$;
 
