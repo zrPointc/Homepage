@@ -1,14 +1,48 @@
-# いいね機能の初回セットアップ
+# いいね機能のセットアップ
 
-このリポジトリには、トップページ全体と各日記に「♡ いいね」を付けるUIが入っています。
+このリポジトリには、トップページ全体と各日記に「♡ いいね」を付けるUIがあります。
 
-GitHub Pagesは静的サイトなので、共有いいね数の保存先としてSupabaseを使います。
+GitHub Pagesは静的サイトなので、共有いいね数の保存と匿名ユーザー認証にSupabaseを使います。
 
-## 1. Supabaseでプロジェクトを作る
+## 既に旧いいね機能を使っている場合
+
+### 1. Anonymous Sign-Ins を有効にする
+
+Supabase Dashboard の Auth settings で **Allow anonymous sign-ins** をONにします。
+
+匿名ユーザーはメールアドレスやパスワードを入力しませんが、Supabase側から固有のユーザーIDとアクセストークンが発行されます。
+
+### 2. 移行SQLを一度だけ実行する
+
+Supabaseの **SQL Editor** を開き、
+
+`supabase/migrate_likes_to_anonymous_auth.sql`
+
+の内容をすべてコピーして貼り付け、**Run** を押します。
+
+この移行では、旧方式の `page_likes` を削除せず、
+
+`page_likes_legacy_20261012`
+
+へ退避します。旧データには不正ないいねが混ざっているため、新しい表示カウントは0から再スタートします。
+
+### 3. この変更をmainへ反映する
+
+`fix/likes-anonymous-auth` の変更をmainへマージすると、新方式のフロントエンドが有効になります。
+
+順番は **Anonymous Sign-InsをON → 移行SQLを実行 → コードをmainへマージ** を推奨します。
+
+## 新規セットアップの場合
+
+### 1. Supabaseでプロジェクトを作る
 
 Supabaseで新しいプロジェクトを1つ作成します。
 
-## 2. SQLを実行する
+### 2. Anonymous Sign-Ins を有効にする
+
+Auth settings で **Allow anonymous sign-ins** をONにします。
+
+### 3. SQLを実行する
 
 SupabaseのSQL Editorを開き、`supabase/likes.sql` の内容をそのまま実行します。
 
@@ -16,18 +50,14 @@ SupabaseのSQL Editorを開き、`supabase/likes.sql` の内容をそのまま�
 
 - `page_likes` テーブル
 - いいね数を取得する `get_like_count` 関数
+- 自分がいいね済みか確認する `get_like_state` 関数
 - いいね／取り消しを切り替える `set_like_state` 関数
 
-ブラウザからテーブルを直接読み書きする権限は与えず、この2関数だけを公開します。
+テーブル自体をブラウザから直接読み書きする権限は与えません。
 
-## 3. Project URL と Publishable key を設定する
+## Project URL と Publishable key
 
-SupabaseのConnect画面から次をコピーします。
-
-- Project URL
-- Publishable key (`sb_publishable_...`)
-
-`static/likes-config.js` を開いて設定します。
+`static/likes-config.js` には次を設定します。
 
 ```js
 window.TEN_LIKES_CONFIG = {
@@ -40,19 +70,23 @@ Publishable keyはブラウザで使うための公開用キーです。
 
 **Secret key (`sb_secret_...`) は絶対にここへ入れないでください。**
 
-## 4. mainへ反映する
+## 新方式の仕組み
 
-設定後にmainへマージすると、GitHub Pagesの通常のデプロイで有効になります。
+旧方式では、ブラウザが `client_id` を自由に送信していました。そのためUUIDを偽造すると複数人として扱われました。
 
-設定値が空のままの場合、いいねUI自体が表示されないため、公開ページが壊れることはありません。
+新方式では、いいねを押したときにSupabase Anonymous Authで匿名サインインし、DB側の `auth.uid()` を本人IDとして使います。
 
-## 仕様
-
-- トップページ全体: `homepage`
-- 日記: `diary:<slug>`
-- ログイン不要
-- 同じブラウザでは同じ対象に1票
+- ログイン画面なし
+- メールアドレス不要
+- パスワード不要
+- Supabaseが本人IDを発行
+- `client_id` をリクエストから指定することはできない
+- 同じ匿名ユーザーは同じ対象に1票
 - もう一度押すと取り消し
-- ブラウザのLocalStorageを消すと別端末相当になります
+- 別端末やブラウザデータ削除後は別匿名ユーザーになる
 
-これは厳密な投票・ランキング用途ではなく、個人サイト向けの軽いリアクション機能です。完全な多重投票防止は行いません。
+## セキュリティ上の限界
+
+これは投票システムではなく、個人サイト向けの軽いリアクションです。
+
+Anonymous Authにすると、任意UUIDを直接送る旧攻撃は防げます。ただし攻撃者が匿名アカウント自体を大量作成する攻撃は別問題です。Supabaseには匿名サインインのIPレート制限がありますが、必要ならCloudflare TurnstileなどのCAPTCHAを追加します。
