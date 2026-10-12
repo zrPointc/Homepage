@@ -7,12 +7,22 @@
 
   if (!widgets.length || !supabaseUrl || !publishableKey) return;
 
+  function formatError(error) {
+    if (!error) return "unknown error";
+    const parts = [];
+    if (error.name) parts.push(error.name);
+    if (error.message) parts.push(error.message);
+    if (error.code) parts.push(`code=${error.code}`);
+    if (error.status) parts.push(`status=${error.status}`);
+    return parts.join(" / ") || String(error);
+  }
+
   if (!supabaseGlobal?.createClient) {
     console.error("Supabase client library was not loaded.");
     widgets.forEach((widget) => {
       widget.hidden = false;
       const status = widget.querySelector("[data-like-status]");
-      if (status) status.textContent = "いいね機能を読み込めませんでした。";
+      if (status) status.textContent = "診断: Supabaseライブラリを読み込めませんでした。";
     });
     return;
   }
@@ -34,7 +44,7 @@
 
   async function getSession() {
     const { data, error } = await client.auth.getSession();
-    if (error) throw error;
+    if (error) throw new Error(`session: ${formatError(error)}`);
     return data.session || null;
   }
 
@@ -43,14 +53,19 @@
     if (existing) return existing;
 
     const { data, error } = await client.auth.signInAnonymously();
-    if (error) throw error;
-    if (!data.session) throw new Error("Anonymous session was not returned.");
+    if (error) throw new Error(`anonymous auth: ${formatError(error)}`);
+    if (!data.session) throw new Error("anonymous auth: session was not returned");
+
+    const { data: userData, error: userError } = await client.auth.getUser();
+    if (userError) throw new Error(`auth verify: ${formatError(userError)}`);
+    if (!userData.user) throw new Error("auth verify: user was not returned");
+
     return data.session;
   }
 
   async function rpc(name, params) {
     const { data, error } = await client.rpc(name, params);
-    if (error) throw error;
+    if (error) throw new Error(`${name}: ${formatError(error)}`);
     return data;
   }
 
@@ -71,7 +86,7 @@
     } catch (error) {
       console.error("Could not load like count", error);
       count.textContent = "–";
-      if (status) status.textContent = "いまはいいね数を読み込めません。";
+      if (status) status.textContent = `診断: ${formatError(error)}`;
     }
 
     try {
@@ -82,12 +97,14 @@
       }
     } catch (error) {
       console.warn("Could not load like state", error);
+      if (status) status.textContent = `診断: ${formatError(error)}`;
     }
 
     button.addEventListener("click", async () => {
       const nextLiked = !liked;
       button.disabled = true;
       widget.classList.add("is-busy");
+      if (status) status.textContent = "認証していいねを送信中…";
 
       try {
         await ensureAuthenticated();
@@ -106,9 +123,7 @@
         }
       } catch (error) {
         console.error("Could not update like", error);
-        if (status) {
-          status.textContent = "いいねを更新できませんでした。ページを再読み込みしてもう一度試してください。";
-        }
+        if (status) status.textContent = `診断: ${formatError(error)}`;
       } finally {
         button.disabled = false;
         widget.classList.remove("is-busy");
