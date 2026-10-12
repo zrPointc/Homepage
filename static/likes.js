@@ -6,49 +6,41 @@
 
   if (!widgets.length || !supabaseUrl || !publishableKey) return;
 
-  const memoryStorage = new Map();
+  const sessionStorageKey = "ten-supabase-auth-session";
 
-  function storageGet(key) {
+  function loadSession() {
     try {
-      return localStorage.getItem(key);
+      const raw = localStorage.getItem(sessionStorageKey);
+      return raw ? JSON.parse(raw) : null;
     } catch (_) {
-      return memoryStorage.get(key) || null;
+      return null;
     }
   }
 
-  function storageSet(key, value) {
+  function saveSession(session) {
     try {
-      localStorage.setItem(key, value);
-    } catch (_) {
-      memoryStorage.set(key, value);
-    }
+      localStorage.setItem(sessionStorageKey, JSON.stringify(session));
+    } catch (_) { /* Private browsing may block storage. */ }
   }
 
-  function storageRemove(key) {
+  function clearSession() {
     try {
-      localStorage.removeItem(key);
-    } catch (_) {
-      memoryStorage.delete(key);
-    }
+      localStorage.removeItem(sessionStorageKey);
+    } catch (_) { /* Ignore storage failures. */ }
   }
 
-  function createClientId() {
-    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, char => {
-      const random = Math.random() * 16 | 0;
-      const value = char === "x" ? random : (random & 0x3) | 0x8;
-      return value.toString(16);
-    });
+  function normalizeSession(payload) {
+    if (!payload?.access_token || !payload?.refresh_token) return null;
+    return {
+      access_token: payload.access_token,
+      refresh_token: payload.refresh_token,
+      expires_at: payload.expires_at || Math.floor(Date.now() / 1000) + Number(payload.expires_in || 3600),
+      user_id: payload.user?.id || null,
+    };
   }
 
-  let clientId = storageGet("ten-like-client-id");
-  if (!clientId) {
-    clientId = createClientId();
-    storageSet("ten-like-client-id", clientId);
-  }
-
-  async function rpc(name, body) {
-    const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${name}`, {
+  async function authRequest(path, body) {
+    const response = await fetch(`${supabaseUrl}/auth/v1/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,11 +49,66 @@
       body: JSON.stringify(body),
     });
 
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(payload?.msg || payload?.message || `Auth API ${response.status}`);
+    }
+    return payload;
+  }
+
+  async function refreshSession(session) {
+    if (!session?.refresh_token) return null;
+    try {
+      const payload = await authRequest("token?grant_type=refresh_token", {
+        refresh_token: session.refresh_token,
+      });
+      const refreshed = normalizeSession(payload);
+      if (refreshed) saveSession(refreshed);
+      return refreshed;
+    } catch (error) {
+      console.warn("Could not refresh anonymous like session", error);
+      clearSession();
+      return null;
+    }
+  }
+
+  async function existingSession() {
+    let session = loadSession();
+    if (!session) return null;
+    const now = Math.floor(Date.now() / 1000);
+    if (Number(session.expires_at || 0) > now + 60) return session;
+    session = await refreshSession(session);
+    return session;
+  }
+
+  async function ensureAuthenticated() {
+    const current = await existingSession();
+    if (current) return current;
+
+    const payload = await authRequest("signup", { data: {} });
+    const created = normalizeSession(payload);
+    if (!created) throw new Error("Anonymous session was not returned.");
+    saveSession(created);
+    return created;
+  }
+
+  async function rpc(name, body, accessToken = null) {
+    const headers = {
+      "Content-Type": "application/json",
+      apikey: publishableKey,
+    };
+    if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${name}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+
     if (!response.ok) {
       const detail = await response.text().catch(() => "");
       throw new Error(`likes API ${response.status}: ${detail}`);
     }
-
     return response.json();
   }
 
@@ -78,9 +125,8 @@
     const status = widget.querySelector("[data-like-status]");
     if (!contentKey || !button || !count) return;
 
-    const likedKey = `ten-like:${contentKey}`;
-    let liked = storageGet(likedKey) === "yes";
-    setPressed(button, liked);
+    let liked = false;
+    setPressed(button, false);
     widget.hidden = false;
 
     try {
@@ -92,27 +138,48 @@
       if (status) status.textContent = "いまはいいね数を読み込めません。";
     }
 
+    const session = await existingSession();
+    if (session) {
+      try {
+        liked = Boolean(await rpc("get_like_state", { p_content_key: contentKey }, session.access_token));
+        setPressed(button, liked);
+      } catch (error) {
+        console.warn("Could not load like state", error);
+      }
+    }
+
     button.addEventListener("click", async () => {
       const nextLiked = !liked;
       button.disabled = true;
       widget.classList.add("is-busy");
 
       try {
-        const nextCount = await rpc("set_like_state", {
-          p_content_key: contentKey,
-          p_client_id: clientId,
-          p_liked: nextLiked,
-        });
+        let authSession = await ensureAuthenticated();
+        let nextCount;
+        try {
+          nextCount = await rpc(
+            "set_like_state",
+            { p_content_key: contentKey, p_liked: nextLiked },
+            authSession.access_token,
+          );
+        } catch (error) {
+          if (!String(error).includes("401")) throw error;
+          authSession = await refreshSession(authSession);
+          if (!authSession) throw error;
+          nextCount = await rpc(
+            "set_like_state",
+            { p_content_key: contentKey, p_liked: nextLiked },
+            authSession.access_token,
+          );
+        }
 
         liked = nextLiked;
         setPressed(button, liked);
         count.textContent = String(nextCount ?? 0);
-        if (liked) storageSet(likedKey, "yes");
-        else storageRemove(likedKey);
         if (status) status.textContent = liked ? "ありがとう。反応を受け取りました。" : "いいねを取り消しました。";
       } catch (error) {
         console.error(error);
-        if (status) status.textContent = "通信に失敗しました。少ししてからもう一度。";
+        if (status) status.textContent = "いまはいいねを受け取れません。少ししてからもう一度。";
       } finally {
         button.disabled = false;
         widget.classList.remove("is-busy");
@@ -120,5 +187,5 @@
     });
   }
 
-  widgets.forEach(setupWidget);
+  widgets.forEach(widget => { setupWidget(widget); });
 })();
