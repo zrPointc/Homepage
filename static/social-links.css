@@ -1,0 +1,66 @@
+.social-hub { margin: 10px 0 32px; }
+.social-hub-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 10px 20px; margin-bottom: 20px; }
+.social-hub-heading .eyebrow { margin-bottom: 6px; }
+.social-hub-heading h2 { font-size: clamp(24px, 2.8vw, 30px); line-height: 1.5; }
+.social-hub-note { padding-bottom: 3px; color: var(--muted); font-size: 12px; }
+.social-hub-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.social-hub-list li { min-width: 0; }
+.social-card {
+  --social-accent: #f0e8e0;
+  --social-border: #615957;
+  --social-fill: #282323;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px 16px;
+  height: 100%;
+  padding: 26px;
+  overflow: hidden;
+  border: 1px solid var(--social-border);
+  border-radius: 12px;
+  background: radial-gradient(ellipse at top right, var(--social-fill), #211d1d 85%);
+  box-shadow: 0 4px 0 #100e0e66;
+  color: var(--ink);
+  text-decoration: none;
+}
+.social-card--youtube { --social-accent: #ff8a81; --social-border: #82504a; --social-fill: #592e2c; }
+.social-card--tiktok { --social-accent: #8de1d8; --social-border: #476864; --social-fill: #273f3d; }
+.social-card--github { --social-accent: #c7b4f1; --social-border: #635673; --social-fill: #3e304b; }
+.social-card::before { content: ''; position: absolute; top: 0; left: 26px; width: 44px; height: 3px; background: var(--social-accent); border-radius: 0 0 3px 3px; }
+.social-card:hover, .social-card:focus-visible { color: var(--ink); border-color: var(--social-accent); box-shadow: 0 4px 0 #100e0e66, 0 0 0 1px var(--social-accent); }
+.social-card-mark { display: grid; place-items: center; width: 52px; height: 52px; border: 1px solid var(--social-border); border-radius: 14px; background: #15131355; color: var(--social-accent); }
+.social-card-mark svg { width: 28px; height: 28px; fill: currentColor; }
+.social-card--tiktok .social-card-mark svg { filter: drop-shadow(1.5px 1.5px #ed6685); }
+.social-card-identity { display: grid; min-width: 0; gap: 3px; }
+.social-card-name { font: 700 26px/1.3 var(--body); letter-spacing: -.02em; }
+.social-card-handle { color: #cbbeb5; font: 11px/1.6 var(--mono); }
+.social-card-description { grid-column: 1 / -1; margin-top: 6px; color: #e4d6cc; font-size: 16px; }
+.social-card-action { display: flex; grid-column: 1 / -1; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--social-border); color: var(--social-accent); font-size: 13px; }
+.social-card-arrow { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border: 1px solid var(--social-border); border-radius: 50%; font-size: 19px; line-height: 1; }
+.social-card-watermark { position: absolute; z-index: -1; top: 26px; right: -12px; width: 150px; height: 150px; fill: var(--social-accent); opacity: .06; pointer-events: none; }
+@media (max-width: 600px) {
+  .social-hub { margin-top: 4px; margin-bottom: 26px; }
+  .social-hub-heading { gap: 6px; margin-bottom: 16px; }
+  .social-hub-note { width: 100%; }
+  .social-hub-list { gap: 12px; }
+  .social-card { grid-template-columns: 36px minmax(0, 1fr); gap: 12px 8px; padding: 20px 14px 16px; border-radius: 9px; }
+  .social-card::before { left: 14px; width: 32px; }
+  .social-card-mark { width: 36px; height: 36px; border-radius: 10px; }
+  .social-card-mark svg { width: 22px; height: 22px; }
+  .social-card-name { font-size: 19px; }
+  .social-card-handle { font-size: 9px; }
+  .social-card-description { font-size: 12px; line-height: 1.8; }
+  .social-card-action { gap: 4px; padding-top: 10px; font-size: 11px; }
+  .social-card-arrow { flex-basis: 24px; width: 24px; height: 24px; font-size: 16px; }
+  .social-card-watermark { top: 30px; right: -15px; width: 110px; height: 110px; }
+}
+@media (max-width: 360px) {
+  .social-card { grid-template-columns: 28px minmax(0, 1fr); padding-right: 12px; padding-left: 12px; }
+  .social-card-mark { width: 28px; height: 32px; border-radius: 7px; }
+  .social-card-mark svg { width: 18px; height: 18px; }
+  .social-card-name { font-size: 17px; }
+  .social-card-handle { font-size: 8px; }
+  .social-card-action { font-size: 10px; }
+}

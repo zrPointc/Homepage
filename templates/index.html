@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% set page = 'home' %}
+{% block page_styles %}<link rel="stylesheet" href="{{ url_for('static', filename='social-links.css') }}">{% endblock %}
 {% block content %}
 <section class="welcome" aria-labelledby="welcome-title">
   <div class="welcome-copy">
@@ -13,30 +14,28 @@
     <figcaption class="hand">のんびり、つくっています。</figcaption>
   </figure>
 </section>
-<section class="social-quick" aria-labelledby="social-quick-title">
-  <div class="social-quick-heading">
-    <h2 id="social-quick-title" class="hand">各SNSはこちら</h2>
-    <p>気になる場所から、のぞいてね。</p>
+<section class="social-hub" aria-labelledby="social-hub-title">
+  <div class="social-hub-heading">
+    <div>
+      <p class="eyebrow">FIND ME / SNS</p>
+      <h2 id="social-hub-title" class="hand">配信も、日々のことも。</h2>
+    </div>
+    <p class="social-hub-note">好きな場所で、つながろう。</p>
   </div>
-  <ul class="social-quick-list">
-    {% for social in social_links %}
+  <ul class="social-hub-list">
+    {% for social in social_links | sort(attribute='quick_order') %}
+    {% if social.url %}
     <li>
-      {% if social.url %}
-      <a class="social-quick-card" href="{{ social.url }}" target="_blank" rel="noopener noreferrer">
-        <span class="social-quick-icon" aria-hidden="true">{{ social.symbol }}</span>
-        <span class="social-quick-name">{{ social.name }}</span>
-        <span class="social-quick-description">{{ social.description }}</span>
-        <span class="social-quick-arrow" aria-hidden="true">↗</span>
+      <a class="social-card social-card--{{ social.key }}" href="{{ social.url }}" target="_blank" rel="noopener noreferrer">
+        <span class="social-card-mark" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><use href="{{ url_for('static', filename='social-icons.svg') }}#{{ social.key }}"></use></svg></span>
+        <span class="social-card-identity"><span class="social-card-name">{{ social.name }}</span><span class="social-card-handle">{{ social.handle }}</span></span>
+        <span class="social-card-description">{{ social.description }}</span>
+        <span class="social-card-action">{{ social.action }}<span class="social-card-arrow" aria-hidden="true">↗</span></span>
+        <svg class="social-card-watermark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="{{ url_for('static', filename='social-icons.svg') }}#{{ social.key }}"></use></svg>
         <span class="sr-only">（新しいタブ）</span>
       </a>
-      {% else %}
-      <div class="social-quick-card social-quick-pending">
-        <span class="social-quick-icon" aria-hidden="true">{{ social.symbol }}</span>
-        <span class="social-quick-name">{{ social.name }}</span>
-        <span class="social-quick-description">準備中</span>
-      </div>
-      {% endif %}
     </li>
+    {% endif %}
     {% endfor %}
   </ul>
 </section>

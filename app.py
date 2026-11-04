@@ -1,11 +1,25 @@
 """Python / Flask でホームページを表示する、小さなアプリ。"""
 
+from hashlib import sha256
+from pathlib import Path
+
 from flask import Flask, abort, render_template
 from content import PROFILE, CURRENT_ACTIVITIES, SOCIAL_LINKS
 from posts import load_posts
 from projects import load_projects
 
 app = Flask(__name__)
+
+
+@app.url_defaults
+def version_static_assets(endpoint, values):
+    """CSS・JSの内容が変わったらURLも変え、古いキャッシュを残しません。"""
+    filename = values.get("filename", "")
+    if endpoint != "static" or "v" in values or not filename.endswith((".css", ".js")):
+        return
+    asset = Path(app.static_folder) / filename
+    if asset.is_file():
+        values["v"] = sha256(asset.read_bytes()).hexdigest()[:12]
 
 
 @app.get("/")
