@@ -28,6 +28,9 @@ const { chromium } = require('playwright');
         if (response.url().startsWith(base) && response.status() >= 400) failures.push(`${response.status()} ${response.url()}`);
       });
       const checkLayout = async label => {
+        // クリック直後はCSSの読み込みが終わっていないことがあるため、適用後に測ります。
+        await page.waitForLoadState('load');
+        await page.evaluate(async () => { await document.fonts.ready; });
         const geometry = await page.evaluate(() => {
           const nav = document.querySelector('.site-nav');
           const box = nav.getBoundingClientRect();
