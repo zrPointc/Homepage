@@ -26,7 +26,11 @@ def export_site():
         rmtree(OUTPUT)
     OUTPUT.mkdir()
     with app.test_client() as client:
-        pages = [("/", OUTPUT / "index.html"), ("/diary/", OUTPUT / "diary" / "index.html")]
+        pages = [
+            ("/", OUTPUT / "index.html"),
+            ("/diary/", OUTPUT / "diary" / "index.html"),
+            ("/guidelines/", OUTPUT / "guidelines" / "index.html"),
+        ]
         pages.extend(
             (f"/diary/{post['slug']}/", OUTPUT / "diary" / str(post["slug"]) / "index.html")
             for post in load_posts()

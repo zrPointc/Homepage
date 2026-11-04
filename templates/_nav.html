@@ -7,6 +7,7 @@
     <a href="{{ '#diary' if page == 'home' else '/diary/' }}" data-section="diary" {% if page == 'diary' %}class="active" aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">▤</span><span>日記</span></a>
     <a href="{{ '#now' if page == 'home' else '/#now' }}" data-section="now"><span class="nav-symbol" aria-hidden="true">&gt;_</span><span>いま</span></a>
     <a href="{{ '#works' if page == 'home' else '/#works' }}" data-section="works"><span class="nav-symbol" aria-hidden="true">&lt;/&gt;</span><span>作品</span></a>
+    <a href="{{ '#guidelines' if page == 'home' else '/guidelines/' }}" data-section="guidelines" {% if page == 'guidelines' %}class="active" aria-current="page"{% endif %}><span class="nav-symbol" aria-hidden="true">✎</span><span>ガイド</span><span class="sr-only">ライン</span></a>
     <a href="#links" data-section="links"><span class="nav-symbol" aria-hidden="true">↗</span><span>リンク</span></a>
   </div>
   <p class="nav-note hand">すこしずつ、<br>つくっていく。<span>〜〜</span></p>

@@ -46,7 +46,7 @@ reducedMotion.addEventListener('change', () => {
 // トップページのメニューだけ、現在読んでいるセクションに印を付けます。
 if (document.body.dataset.page === 'home') {
   const links = [...document.querySelectorAll('.nav-items a[data-section]')];
-  const sections = ['diary', 'now', 'works', 'links']
+  const sections = ['diary', 'now', 'works', 'guidelines', 'links']
     .map(id => document.getElementById(id)).filter(Boolean);
   const nav = document.querySelector('.site-nav');
   let scheduled = false;

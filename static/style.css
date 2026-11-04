@@ -95,6 +95,10 @@ main { min-width: 0; padding-top: 38px; }
 .project h3 { font-size: 22px; line-height: 1.6; font-weight: 500; margin-bottom: 8px; }
 .project-description { font-size: 16px; }
 .project-body { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.guidelines-card { padding: clamp(20px, 3vw, 30px); margin-bottom: 20px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
+.guidelines-card h2, .guidelines-card h3 { font-size: clamp(22px, 2.5vw, 27px); line-height: 1.6; margin-bottom: 12px; }
+.guidelines-card > p:not(.eyebrow) { color: var(--muted); }
+.guidelines-card .text-link { margin-top: 12px; }
 .site-footer { margin-top: 44px; border-top: 2px solid #c56561; padding: 26px 0 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
 .site-footer h2 { color: var(--muted); font-size: 18px; }
 .social-links { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -148,13 +152,13 @@ main { min-width: 0; padding-top: 38px; }
   .nav-brand { margin-bottom: 16px; }
   .nav-note { display: none; }
 }
-/* タブレットも上部固定。5項目すべて表示し、横スクロールを不要にします。 */
+/* タブレットも上部固定。6項目すべて表示し、横スクロールを不要にします。 */
 @media (max-width: 900px) {
   html { scroll-padding-top: calc(90px + env(safe-area-inset-top)); }
   body { padding-top: calc(68px + env(safe-area-inset-top)); }
   .site-nav { inset: 0 0 auto; width: 100%; height: auto; max-height: 100dvh; padding: env(safe-area-inset-top) max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left)); border: 0; border-bottom: 1px solid #796058; box-shadow: 0 3px 15px #0005; background: #211d1c; }
   .nav-brand, .nav-label, .nav-note { display: none; }
-  .nav-items { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 0; max-width: 720px; margin: auto; }
+  .nav-items { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 0; max-width: 720px; margin: auto; }
   .nav-items a { flex-direction: column; justify-content: center; gap: 0; min-width: 0; min-height: 67px; padding: 6px 0; border: 0; border-bottom: 2px solid transparent; font: 13px/1.6 var(--body); }
   .nav-symbol { min-width: 0; line-height: 1.5; font-size: 14px; }
   .nav-items a.active { border-bottom-color: var(--red); }

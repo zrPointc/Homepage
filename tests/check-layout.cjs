@@ -53,7 +53,7 @@ const { chromium } = require('playwright');
       assert(await page.locator('.portrait img').evaluate(img => img.complete && img.naturalWidth > 0));
       await checkLayout('home top');
       await page.screenshot({ path: `test-results/home-${width}.png`, fullPage: true });
-      for (const id of ['diary', 'now', 'works', 'links']) {
+      for (const id of ['diary', 'now', 'works', 'guidelines', 'links']) {
         await page.locator(`.nav-items a[data-section="${id}"]`).click();
         await checkLayout(`anchor ${id}`);
         const visibleHeading = await page.evaluate(id => {
@@ -65,6 +65,14 @@ const { chromium } = require('playwright');
       }
       await page.locator('.nav-items a[data-section="top"]').click();
       assert((await page.evaluate(() => scrollY)) <= 1);
+      await page.locator(`a[href="/Homepage/guidelines/"]`).click();
+      await checkLayout('guidelines');
+      assert.equal(await page.locator('h1').textContent(), 'イラスト・切り抜きのガイドライン');
+      assert.equal(await page.locator('.nav-items a[aria-current="page"]').getAttribute('data-section'), 'guidelines');
+      assert.equal(await page.locator('#illustration-title').count(), 1);
+      assert.equal(await page.locator('#clips-title').count(), 1);
+      await page.screenshot({ path: `test-results/guidelines-${width}.png`, fullPage: true });
+      await page.locator('main a[href="/Homepage/"]').click();
       await page.locator('a[href="/Homepage/diary/"]').click();
       await checkLayout('diary');
       await page.screenshot({ path: `test-results/diary-${width}.png`, fullPage: true });
@@ -77,7 +85,7 @@ const { chromium } = require('playwright');
       assert(page.url().endsWith('/Homepage/#now'));
       assert.equal(await page.locator('.greeting.is-typing').count(), 0, '戻るたびに再生しない');
       await context.close();
-      console.log(`PASS ${width}px: トップ・日記・記事、固定メニュー、全リンク、アンカー`);
+      console.log(`PASS ${width}px: トップ・ガイドライン・日記・記事、固定メニュー、全リンク、アンカー`);
     }
     const reduced = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 375, height: 800 } });
     const reducedPage = await reduced.newPage();
@@ -91,6 +99,8 @@ const { chromium } = require('playwright');
     assert.equal(await noJsPage.locator('.greeting').textContent(), 'こんにちは！点です');
     await noJsPage.locator('.nav-items a[data-section="works"]').click();
     assert(noJsPage.url().endsWith('#works'));
+    await noJsPage.locator('a[href="/Homepage/guidelines/"]').click();
+    assert.equal(await noJsPage.locator('h1').textContent(), 'イラスト・切り抜きのガイドライン');
     await noJs.close();
     assert.deepEqual(failures, []);
     console.log('PASS reduced-motion / JavaScript無効 / 実行エラーなし');

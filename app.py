@@ -21,6 +21,11 @@ def home():
     )
 
 
+@app.get("/guidelines/")
+def guidelines():
+    return render_template("guidelines.html", profile=PROFILE, social_links=SOCIAL_LINKS)
+
+
 @app.get("/diary/")
 def diary():
     return render_template("diary.html", profile=PROFILE, posts=load_posts(), social_links=SOCIAL_LINKS)
