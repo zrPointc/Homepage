@@ -17,8 +17,8 @@ CURRENT_ACTIVITIES = ["AtCoder, Pythonの勉強", "小さなゲーム・シス�
 
 # 自分のプロフィールのURLを入れてください。空欄は「準備中」と表示します。
 SOCIAL_LINKS = [
-    {"name": "X", "url": "https://x.com/fksts10"},
-    {"name": "GitHub", "url": "https://github.com/zrPointc"},
-    {"name": "YouTube", "url": "https://www.youtube.com/@fksts10"},
-    {"name": "TikTok", "url": "https://www.tiktok.com/@fksts10"},
+    {"name": "X", "url": "https://x.com/fksts10", "symbol": "𝕏", "description": "お知らせ・日々のこと"},
+    {"name": "GitHub", "url": "https://github.com/zrPointc", "symbol": "</>", "description": "コード・制作記録"},
+    {"name": "YouTube", "url": "https://www.youtube.com/@fksts10", "symbol": "▶", "description": "配信・動画"},
+    {"name": "TikTok", "url": "https://www.tiktok.com/@fksts10", "symbol": "♪", "description": "ショート動画"},
 ]
