@@ -37,6 +37,7 @@
   text-decoration: none;
 }
 .guide-contents a:hover, .guide-contents a:focus-visible { background: #302422; }
+.guide-contents a:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .guide-contents a > span:first-child { color: var(--red); font: 11px var(--mono); }
 .guide-contents-arrow { color: var(--muted); margin-left: auto; }
 .guide-section {

@@ -72,7 +72,7 @@ const { chromium } = require('playwright');
       assert.equal(await page.locator('#illustration-title').count(), 1);
       assert.equal(await page.locator('#clips-title').count(), 1);
       await page.screenshot({ path: `test-results/guidelines-${width}.png`, fullPage: true });
-      for (const id of ['illustration-title', 'commission-title', 'official-use-title', 'clips-title']) {
+      for (const id of ['illustration-title', 'ai-title', 'commission-title', 'official-use-title', 'clips-title']) {
         await page.locator(`.guide-contents a[href="#${id}"]`).click();
         const headingVisible = await page.locator(`#${id}`).evaluate(heading => {
           const box = heading.getBoundingClientRect();
