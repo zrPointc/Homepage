@@ -98,6 +98,8 @@ main { min-width: 0; padding-top: 38px; }
 .guidelines-card { padding: clamp(20px, 3vw, 30px); margin-bottom: 20px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
 .guidelines-card h2, .guidelines-card h3 { font-size: clamp(22px, 2.5vw, 27px); line-height: 1.6; margin-bottom: 12px; }
 .guidelines-card > p:not(.eyebrow) { color: var(--muted); }
+.guidelines-copy p + p { margin-top: 1em; }
+.guidelines-copy a { color: var(--red); }
 .guidelines-card .text-link { margin-top: 12px; }
 .site-footer { margin-top: 44px; border-top: 2px solid #c56561; padding: 26px 0 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
 .site-footer h2 { color: var(--muted); font-size: 18px; }
