@@ -20,7 +20,7 @@ const { chromium } = require('playwright');
     }
     browser = await chromium.launch({ headless: true });
     const failures = [];
-    for (const width of [375, 768, 1366]) {
+    for (const width of [375, 768, 1060, 1366]) {
       const context = await browser.newContext({ viewport: { width, height: 800 } });
       const page = await context.newPage();
       page.on('pageerror', error => failures.push(error.message));
@@ -72,6 +72,15 @@ const { chromium } = require('playwright');
       assert.equal(await page.locator('#illustration-title').count(), 1);
       assert.equal(await page.locator('#clips-title').count(), 1);
       await page.screenshot({ path: `test-results/guidelines-${width}.png`, fullPage: true });
+      for (const id of ['illustration-title', 'commission-title', 'official-use-title', 'clips-title']) {
+        await page.locator(`.guide-contents a[href="#${id}"]`).click();
+        const headingVisible = await page.locator(`#${id}`).evaluate(heading => {
+          const box = heading.getBoundingClientRect();
+          const menuBottom = innerWidth <= 900 ? document.querySelector('.site-nav').getBoundingClientRect().bottom : 0;
+          return box.top >= menuBottom && box.bottom <= innerHeight;
+        });
+        assert(headingVisible, `${width}: 目次の移動先 ${id} が見えません`);
+      }
       await page.locator('main a[href="/Homepage/"]').click();
       await page.locator('a[href="/Homepage/diary/"]').click();
       await checkLayout('diary');

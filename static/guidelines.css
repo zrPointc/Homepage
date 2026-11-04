@@ -1,0 +1,96 @@
+/* 長文のガイドライン用。見出し・本文・目次の幅と余白をまとめて管理。 */
+.guide-page {
+  max-width: 780px;
+  margin: 0 auto;
+  font-family: var(--body);
+}
+.guide-header { padding: 4px 0 28px; }
+.guide-header h1 {
+  max-width: 24em;
+  font-size: clamp(25px, 3vw, 34px);
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: .02em;
+}
+.guide-header h1 > span, .guide-section h2 > span { display: inline-block; max-width: 100%; }
+.guide-intro { color: var(--muted); font-size: 14px; margin-top: 16px; }
+.guide-contents {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  padding: 1px;
+  margin-bottom: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--line);
+  overflow: hidden;
+}
+.guide-contents a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  background: var(--bg);
+  font-size: 13px;
+  line-height: 1.7;
+  text-decoration: none;
+}
+.guide-contents a:hover, .guide-contents a:focus-visible { background: #302422; }
+.guide-contents a > span:first-child { color: var(--red); font: 11px var(--mono); }
+.guide-contents-arrow { color: var(--muted); margin-left: auto; }
+.guide-section {
+  margin-bottom: 28px;
+  padding: clamp(22px, 3vw, 36px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.guide-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.guide-number { color: var(--red); font: 12px var(--mono); }
+.guide-section h2 {
+  flex: 1;
+  min-width: 0;
+  font-size: clamp(18px, 2vw, 21px);
+  font-weight: 700;
+  line-height: 1.7;
+  scroll-margin-top: 28px;
+}
+.guide-badge {
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: #422b29;
+  color: #ffb4a9;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.guide-copy { color: #e0d6ce; font-size: 15px; line-height: 2.05; overflow-wrap: anywhere; }
+.guide-copy > p + p { margin-top: 20px; }
+.guide-copy strong { color: var(--ink); font-weight: 700; }
+.guide-copy a { color: var(--red); }
+.guide-copy .guide-callout {
+  padding: 16px 20px;
+  border-left: 3px solid var(--red);
+  border-radius: 0 4px 4px 0;
+  background: #302624;
+}
+@media (max-width: 900px) {
+  .guide-section h2 { scroll-margin-top: 12px; }
+}
+@media (max-width: 600px) {
+  .guide-contents { grid-template-columns: minmax(0, 1fr); margin-bottom: 24px; }
+  .guide-contents a { padding: 13px 16px; }
+  .guide-section { padding: 22px 18px; margin-bottom: 20px; }
+  .guide-section-heading { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 10px; margin-bottom: 20px; padding-bottom: 16px; }
+  .guide-copy { font-size: 14px; }
+  .guide-copy .guide-callout { padding: 14px 16px; }
+  .guide-badge { grid-column: 2; justify-self: start; }
+}
