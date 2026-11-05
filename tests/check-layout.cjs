@@ -70,12 +70,13 @@ const { chromium } = require('playwright');
       assert((await page.evaluate(() => scrollY)) <= 1);
       await page.locator(`a[href="/Homepage/guidelines/"]`).click();
       await checkLayout('guidelines');
-      assert.equal(await page.locator('h1').textContent(), 'イラスト・切り抜きのガイドライン');
+      assert.equal(await page.locator('h1').textContent(), 'ファン活動・二次創作ガイドライン');
       assert.equal(await page.locator('.nav-items a[aria-current="page"]').getAttribute('data-section'), 'guidelines');
       assert.equal(await page.locator('#illustration-title').count(), 1);
       assert.equal(await page.locator('#clips-title').count(), 1);
+      assert.equal(await page.locator('#common-title').count(), 1);
       await page.screenshot({ path: `test-results/guidelines-${width}.png`, fullPage: true });
-      for (const id of ['illustration-title', 'ai-title', 'commission-title', 'official-use-title', 'clips-title']) {
+      for (const id of ['illustration-title', 'ai-title', 'commission-title', 'official-use-title', 'clips-title', 'common-title']) {
         await page.locator(`.guide-contents a[href="#${id}"]`).click();
         const headingVisible = await page.locator(`#${id}`).evaluate(heading => {
           const box = heading.getBoundingClientRect();
@@ -112,7 +113,7 @@ const { chromium } = require('playwright');
     await noJsPage.locator('.nav-items a[data-section="works"]').click();
     assert(noJsPage.url().endsWith('#works'));
     await noJsPage.locator('a[href="/Homepage/guidelines/"]').click();
-    assert.equal(await noJsPage.locator('h1').textContent(), 'イラスト・切り抜きのガイドライン');
+    assert.equal(await noJsPage.locator('h1').textContent(), 'ファン活動・二次創作ガイドライン');
     await noJs.close();
     assert.deepEqual(failures, []);
     console.log('PASS reduced-motion / JavaScript無効 / 実行エラーなし');
