@@ -13,9 +13,9 @@ app = Flask(__name__)
 
 @app.url_defaults
 def version_static_assets(endpoint, values):
-    """CSS・JSの内容が変わったらURLも変え、古いキャッシュを残しません。"""
+    """CSS・JS・SVGの内容が変わったらURLも変え、古いキャッシュを残しません。"""
     filename = values.get("filename", "")
-    if endpoint != "static" or "v" in values or not filename.endswith((".css", ".js")):
+    if endpoint != "static" or "v" in values or not filename.endswith((".css", ".js", ".svg")):
         return
     asset = Path(app.static_folder) / filename
     if asset.is_file():

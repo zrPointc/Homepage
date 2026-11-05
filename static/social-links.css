@@ -5,6 +5,7 @@
 .social-hub-note { padding-bottom: 3px; color: var(--muted); font-size: 12px; }
 .social-hub-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .social-hub-list li { min-width: 0; }
+.social-hub-list li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .social-card {
   --social-accent: #f0e8e0;
   --social-border: #615957;
@@ -27,6 +28,7 @@
 }
 .social-card--youtube { --social-accent: #ff8a81; --social-border: #82504a; --social-fill: #592e2c; }
 .social-card--tiktok { --social-accent: #8de1d8; --social-border: #476864; --social-fill: #273f3d; }
+.social-card--fanbox { --social-accent: #ffc184; --social-border: #816044; --social-fill: #513b25; }
 .social-card--github { --social-accent: #c7b4f1; --social-border: #635673; --social-fill: #3e304b; }
 .social-card::before { content: ''; position: absolute; top: 0; left: 26px; width: 44px; height: 3px; background: var(--social-accent); border-radius: 0 0 3px 3px; }
 .social-card:hover, .social-card:focus-visible { color: var(--ink); border-color: var(--social-accent); box-shadow: 0 4px 0 #100e0e66, 0 0 0 1px var(--social-accent); }
@@ -40,6 +42,12 @@
 .social-card-action { display: flex; grid-column: 1 / -1; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--social-border); color: var(--social-accent); font-size: 13px; }
 .social-card-arrow { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border: 1px solid var(--social-border); border-radius: 50%; font-size: 19px; line-height: 1; }
 .social-card-watermark { position: absolute; z-index: -1; top: 26px; right: -12px; width: 150px; height: 150px; fill: var(--social-accent); opacity: .06; pointer-events: none; }
+.social-hub-list li:last-child:nth-child(odd) .social-card { grid-template-columns: 52px minmax(0, 1fr) auto; gap: 6px 16px; padding-top: 20px; padding-bottom: 20px; }
+.social-hub-list li:last-child:nth-child(odd) .social-card-mark { grid-column: 1; grid-row: 1 / 3; }
+.social-hub-list li:last-child:nth-child(odd) .social-card-identity { grid-column: 2; grid-row: 1; }
+.social-hub-list li:last-child:nth-child(odd) .social-card-description { grid-column: 2; grid-row: 2; margin: 0; font-size: 12px; }
+.social-hub-list li:last-child:nth-child(odd) .social-card-action { grid-column: 3; grid-row: 1 / 3; margin: 0; padding: 0; border: 0; gap: 12px; }
+.social-hub-list li:last-child:nth-child(odd) .social-card-watermark { top: -24px; right: 140px; }
 @media (max-width: 600px) {
   .social-hub { margin-top: 4px; margin-bottom: 26px; }
   .social-hub-heading { gap: 6px; margin-bottom: 16px; }
@@ -55,6 +63,9 @@
   .social-card-action { gap: 4px; padding-top: 10px; font-size: 11px; }
   .social-card-arrow { flex-basis: 24px; width: 24px; height: 24px; font-size: 16px; }
   .social-card-watermark { top: 30px; right: -15px; width: 110px; height: 110px; }
+  .social-hub-list li:last-child:nth-child(odd) .social-card { grid-template-columns: 36px minmax(0, 1fr) auto; gap: 4px 10px; }
+  .social-hub-list li:last-child:nth-child(odd) .social-card-action { gap: 8px; }
+  .social-hub-list li:last-child:nth-child(odd) .social-card-watermark { top: -14px; right: 100px; }
 }
 @media (max-width: 360px) {
   .social-card { grid-template-columns: 28px minmax(0, 1fr); padding-right: 12px; padding-left: 12px; }
