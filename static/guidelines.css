@@ -95,3 +95,21 @@
   .guide-copy .guide-callout { padding: 14px 16px; }
   .guide-badge { grid-column: 2; justify-self: start; }
 }
+
+/* ガイドライン本文内の小見出し・箇条書き */
+.guide-copy h3 {
+  margin-top: 28px;
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 700;
+  color: var(--ink);
+}
+.guide-copy h3 + p,
+.guide-copy h3 + ul { margin-top: 12px; }
+.guide-copy ul {
+  list-style: disc;
+  padding-left: 1.5em;
+  margin-top: 12px;
+}
+.guide-copy li + li { margin-top: 6px; }
+.guide-copy ul + p { margin-top: 20px; }
