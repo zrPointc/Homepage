@@ -70,21 +70,12 @@ const { chromium } = require('playwright');
       assert((await page.evaluate(() => scrollY)) <= 1);
       await page.locator(`a[href="/Homepage/guidelines/"]`).click();
       await checkLayout('guidelines');
-      assert.equal(await page.locator('h1').textContent(), 'ファン活動・二次創作ガイドライン');
+      assert.equal(await page.locator('h1').textContent(), 'ガイドライン');
       assert.equal(await page.locator('.nav-items a[aria-current="page"]').getAttribute('data-section'), 'guidelines');
-      assert.equal(await page.locator('#illustration-title').count(), 1);
-      assert.equal(await page.locator('#clips-title').count(), 1);
-      assert.equal(await page.locator('#common-title').count(), 1);
+      assert.equal(await page.locator('#maintenance-title').count(), 1);
+      assert.equal(await page.getByText('ただいま工事中です。').count(), 1);
+      assert.equal(await page.locator('.guide-contents').count(), 0);
       await page.screenshot({ path: `test-results/guidelines-${width}.png`, fullPage: true });
-      for (const id of ['illustration-title', 'ai-title', 'commission-title', 'official-use-title', 'clips-title', 'common-title']) {
-        await page.locator(`.guide-contents a[href="#${id}"]`).click();
-        const headingVisible = await page.locator(`#${id}`).evaluate(heading => {
-          const box = heading.getBoundingClientRect();
-          const menuBottom = innerWidth <= 900 ? document.querySelector('.site-nav').getBoundingClientRect().bottom : 0;
-          return box.top >= menuBottom && box.bottom <= innerHeight;
-        });
-        assert(headingVisible, `${width}: 目次の移動先 ${id} が見えません`);
-      }
       await page.locator('main a[href="/Homepage/"]').click();
       await page.locator('a[href="/Homepage/diary/"]').click();
       await checkLayout('diary');
