@@ -88,10 +88,7 @@ main { min-width: 0; padding-top: 38px; }
 .project { background: #231f1e; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
 .project-file { min-width: 0; overflow-wrap: anywhere; }
 .status { color: #ffada3; white-space: nowrap; margin-left: auto; font-size: 11px; }
-.project-content { display: grid; grid-template-columns: 155px minmax(0,1fr); gap: 24px; padding: 25px; }
-.project-art { align-self: start; display: grid; gap: 12px; padding: 20px 15px; background: #191717; border: 1px solid #69554e; border-radius: 4px; transform: rotate(-2deg); color: #e9c4b1; text-align: center; }
-.project-art > span:first-child { color: var(--red); font: 28px var(--mono); }
-.project-art .hand { font-size: 20px; }
+.project-content { padding: 25px; }
 .project h3 { font-size: 22px; line-height: 1.6; font-weight: 500; margin-bottom: 8px; }
 .project-description { font-size: 16px; }
 .project-body { color: var(--muted); font-size: 14px; margin-top: 12px; }
@@ -205,8 +202,7 @@ main { min-width: 0; padding-top: 38px; }
   .window-dots { font-size: 8px; }
   .window-bar h2 > span { display: none; }
   .terminal-body { padding: 17px; font-size: 12px; }
-  .project-content { display: block; padding: 20px; }
-  .project-art { display: none; }
+  .project-content { padding: 20px; }
   .project h3 { font-size: 20px; }
   .project-description { font-size: 15px; }
   .project-body { font-size: 14px; }
