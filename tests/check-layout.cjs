@@ -104,7 +104,7 @@ const { chromium } = require('playwright');
     await noJsPage.locator('.nav-items a[data-section="works"]').click();
     assert(noJsPage.url().endsWith('#works'));
     await noJsPage.locator('a[href="/Homepage/guidelines/"]').click();
-    assert.equal(await noJsPage.locator('h1').textContent(), 'ファン活動・二次創作ガイドライン');
+    assert.equal(await noJsPage.locator('h1').textContent(), 'ガイドライン');
     await noJs.close();
     assert.deepEqual(failures, []);
     console.log('PASS reduced-motion / JavaScript無効 / 実行エラーなし');
