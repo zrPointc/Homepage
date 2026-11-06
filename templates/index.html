@@ -70,7 +70,7 @@
     <article class="project">
       <div class="window-bar"><span class="window-dots" aria-hidden="true">● ● ●</span><span class="project-file">{{ project.filename }}</span>{% if project.status %}<span class="status">{{ project.status }}</span>{% endif %}</div>
       <div class="project-content">
-        <div class="project-art" aria-hidden="true"><span>{{ '</>' if project.kind == 'code' else '+ ○' if project.kind == 'game' else '▤' }}</span><span class="hand">つくって、<br>ためして、<br>記録する。</span></div>
+        <!-- Removed project-art block -->
         <div><h3>{{ project.title }}</h3><p class="project-description">{{ project.description }}</p><div class="markdown-body project-body">{{ project.body_html | safe }}</div>
           {% if project.url %}<a class="text-link" href="{{ project.url }}" target="_blank" rel="noopener noreferrer">{{ project.link_text }} ↗<span class="sr-only">（新しいタブ）</span></a>{% endif %}
         </div>
