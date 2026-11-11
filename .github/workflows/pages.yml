@@ -17,6 +17,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # ブラウザとフォントを同梱し、毎回のUbuntuパッケージ取得を避けます。
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --ipc=host
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -36,9 +40,7 @@ jobs:
         with:
           node-version: "22"
       - name: Install browser test tools
-        run: |
-          npm install --no-save --package-lock=false playwright@1.62.1
-          npx playwright install --with-deps chromium
+        run: npm install --no-save --package-lock=false playwright@1.62.1
       - name: Check layout and navigation
         run: node tests/check-layout.cjs
       - name: Save layout screenshots
