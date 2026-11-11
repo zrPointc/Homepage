@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # ブラウザとフォントを同梱し、毎回のUbuntuパッケージ取得を避けます。
     container:
       image: mcr.microsoft.com/playwright:v1.62.1-noble
